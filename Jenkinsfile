@@ -30,5 +30,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Run Docker Compose') {
+                    when {
+                        expression {
+                            fileExists('docker-compose-mongodb.yml') ||
+                            fileExists('docker-compose-postgres.yml') ||
+                            fileExists('docker-compose-mysql.yml')
+                        }
+                    }
+                    steps {
+                        script {
+                            if (fileExists('docker-compose-mongodb.yml')) {
+                                sh 'docker-compose -f docker-compose-mongodb.yml up -d'
+                            } else if (fileExists('docker-compose-postgres.yml')) {
+                                sh 'docker-compose -f docker-compose-postgres.yml up -d'
+                            } else if (fileExists('docker-compose-mysql.yml')) {
+                                sh 'docker-compose -f docker-compose-mysql.yml up -d'
+                            }
+                        }
+                    }
+                }
+
     }
 }
